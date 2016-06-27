@@ -1,3 +1,4 @@
 # temp
-Make simple easygui for an ffv1 - > prores/v210/h264/DVD <br>
-Compile to exe?
+Proof of concept GUI using pyqt4 to transcode video to ffv1 <br>
+Future plans: Compile to exe/app and transcode from ffv1 -> prores/h264<br>
+
