@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file '/home/kieranjol/Downloads/615def9e197d5db04bef-c52e123ba3de78a5ae11bbaa4cd826207044f29c/design.ui'
+# Form implementation generated from reading ui file '/home/kieranjol/cork/ffv1-gui/design.ui'
 #
 # Created by: PyQt4 UI code generator 4.11.4
 #
@@ -33,12 +33,12 @@ class Ui_MainWindow(object):
         self.dirname_text = QtGui.QLineEdit(self.centralwidget)
         self.dirname_text.setObjectName(_fromUtf8("dirname_text"))
         self.gridLayout.addWidget(self.dirname_text, 1, 1, 1, 1)
-        self.comboBox = QtGui.QComboBox(self.centralwidget)
-        self.comboBox.setObjectName(_fromUtf8("comboBox"))
-        self.comboBox.addItem(_fromUtf8(""))
-        self.comboBox.addItem(_fromUtf8(""))
-        self.comboBox.addItem(_fromUtf8(""))
-        self.gridLayout.addWidget(self.comboBox, 2, 1, 1, 1)
+        self.container_selection = QtGui.QComboBox(self.centralwidget)
+        self.container_selection.setObjectName(_fromUtf8("container_selection"))
+        self.container_selection.addItem(_fromUtf8(""))
+        self.container_selection.addItem(_fromUtf8(""))
+        self.container_selection.addItem(_fromUtf8(""))
+        self.gridLayout.addWidget(self.container_selection, 2, 1, 1, 1)
         self.pushButton = QtGui.QPushButton(self.centralwidget)
         self.pushButton.setObjectName(_fromUtf8("pushButton"))
         self.gridLayout.addWidget(self.pushButton, 6, 1, 1, 1)
@@ -92,15 +92,15 @@ class Ui_MainWindow(object):
 
     def retranslateUi(self, MainWindow):
         MainWindow.setWindowTitle(_translate("MainWindow", "FFV1 Transcoder v0.1 - 2016", None))
-        self.comboBox.setItemText(0, _translate("MainWindow", ".mkv", None))
-        self.comboBox.setItemText(1, _translate("MainWindow", ".mov", None))
-        self.comboBox.setItemText(2, _translate("MainWindow", ".avi", None))
+        self.container_selection.setItemText(0, _translate("MainWindow", ".mkv", None))
+        self.container_selection.setItemText(1, _translate("MainWindow", ".mov", None))
+        self.container_selection.setItemText(2, _translate("MainWindow", ".avi", None))
         self.pushButton.setText(_translate("MainWindow", "Encode", None))
-        self.checkBox_2.setText(_translate("MainWindow", "Generate md5 manifest", None))
+        self.checkBox_2.setText(_translate("MainWindow", "Generate whole file md5 manifest", None))
         self.btnBrowse.setText(_translate("MainWindow", "Select file (single input)", None))
         self.lineEdit.setText(_translate("MainWindow", "Select Container:", None))
-        self.checkBox.setText(_translate("MainWindow", "Disable Lossless Verification (NOT RECOMMENDED)", None))
-        self.pushButton_2.setText(_translate("MainWindow", "Select Directory (batch encode)", None))
+        self.checkBox.setText(_translate("MainWindow", "Disable Framemd5 Lossless Verification (Speed Increase - NOT RECOMMENDED)", None))
+        self.pushButton_2.setText(_translate("MainWindow", "Select Directory Input (batch process)", None))
         self.menuFile.setTitle(_translate("MainWindow", "File", None))
         self.menuHelp.setTitle(_translate("MainWindow", "Help", None))
         self.actionOpen_single_file.setText(_translate("MainWindow", "Open Single File", None))
