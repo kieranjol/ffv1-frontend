@@ -10,6 +10,7 @@ config =  os.path.dirname(os.path.abspath(sys.argv[0])) + '/config.txt'
          
 class ExampleApp(QtGui.QMainWindow, design.Ui_MainWindow):
     def __init__(self):
+        global ffmpeg
         super(self.__class__, self).__init__()
         self.setupUi(self)  # This is defined in design.py file automatically
         if os.path.isfile(config):
@@ -26,7 +27,7 @@ class ExampleApp(QtGui.QMainWindow, design.Ui_MainWindow):
             msgBox = QtGui.QMessageBox()
             msgBox.setText('FFmpeg is not installed - Please select the ffmpeg executable')
             ret = msgBox.exec_() 
-            global ffmpeg
+            
             ffmpeg = QtGui.QFileDialog.getOpenFileName(self,
                                                                       "FFMPEG EXECUTABLE") 
             if not os.path.isfile(config):
