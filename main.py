@@ -6,8 +6,7 @@ import os
 
 ffmpeg = 'ffmpeg'
 config =  os.path.dirname(os.path.abspath(sys.argv[0])) + '/config.txt'
-
-         
+        
 class ExampleApp(QtGui.QMainWindow, design.Ui_MainWindow):
     def __init__(self):
         global ffmpeg
@@ -18,7 +17,7 @@ class ExampleApp(QtGui.QMainWindow, design.Ui_MainWindow):
             with open(config,"r") as fo:
                 ffmpeg = fo.read()
             
-            print 'i used %s as thingy' % ffmpeg
+            print 'i used %s as exe' % ffmpeg
         try:
             print ffmpeg, 'fsuioduiouwriou'
             subprocess.call([ffmpeg, '-v','0'])
@@ -28,50 +27,50 @@ class ExampleApp(QtGui.QMainWindow, design.Ui_MainWindow):
             msgBox.setText('FFmpeg is not installed - Please select the ffmpeg executable')
             ret = msgBox.exec_() 
             
-            ffmpeg = QtGui.QFileDialog.getOpenFileName(self,
-                                                                      "FFMPEG EXECUTABLE") 
+            ffmpeg = QtGui.QFileDialog.getOpenFileName(self, "FFMPEG EXECUTABLE") 
             if not os.path.isfile(config):
                  with open(config,"wb") as fo: 
                      fo.write(ffmpeg)  
                                                       
         global container
         container = '.mkv' # default - find out a better way of doing this, like 'if not x'
-        
-        print container, '111111111111111111111'
         directory = self.btnBrowse.clicked.connect(self.browse_folder)
         #directory = QtCore.QString(directory)
         self.btnBrowse.clicked.connect(self.update_dir)
         self.pushButton.clicked.connect(self.encode)                                                    
-        
+        self.pushButton_3.clicked.connect(self.override_output) 
+        self.pushButton_3.clicked.connect(self.update_output)
         self.container_selection.activated[str].connect(self.on_combo_activated)
-    def browse_folder(self):
-        #self.textBrowser.clear() # In case there are any existing elements in the list
-        global directory
-        directory = QtGui.QFileDialog.getOpenFileName(self,
-                                                           "Pick a file")
-        # execute getExistingDirectory dialog and set the directory variable to be equal
-        # to the user selected directory
         
+    def browse_folder(self):
+        global directory
+        directory = QtGui.QFileDialog.getOpenFileName(self, "Pick a file")
         return directory
     
+    def override_output(self):
+        #self.textBrowser.clear() # In case there are any existing elements in the list
+        global output
+        output = QtGui.QFileDialog.getExistingDirectory(self, "Pick a file")
+        
     def on_combo_activated(self):
         global container
         container = self.container_selection.currentText()
-        print container    
+        print container
+        
     def encode(self):
-    
-        print container, 5343
         try:
               if directory: 
-                    subprocess.call([str(ffmpeg),'-i', str(directory), '-c:v', 'ffv1', '-f', 'null','-']) # for all files, if any, in the directory    
-
+                    subprocess.call([str(ffmpeg),'-i', str(directory), '-c:v', 'ffv1', '-f', 'null','-']) 
         except NameError:
                 msgBox = QtGui.QMessageBox()
                 msgBox.setText('Please select an input before encoding')
                 ret = msgBox.exec_()    
     def update_dir(self):
-
-        self.filename_text.setText(directory)# add file to the listWidget
+        self.filename_text.setText(directory)
+        
+    def update_output(self):
+        self.lineEdit_2.setText(output)
+        
 def main():
     app = QtGui.QApplication(sys.argv)  # A new instance of QApplication
     form = ExampleApp()  # We set the form to be our ExampleApp (design)
