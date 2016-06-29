@@ -1,50 +1,76 @@
-from PyQt4 import QtGui, QtCore  # Import the PyQt4 module we'll need
-import sys  # We need sys so that we can pass argv to QApplication
+from PyQt4 import QtGui, QtCore 
+import sys
 import subprocess
-import design  # This file holds our MainWindow and all design related things
+import design
+import os
 
-# it also keeps events etc that we defined in Qt Designer
-import os  # For listing directory methods
-
-
+ffmpeg = 'ffmpeg'
+config =  os.path.dirname(os.path.abspath(sys.argv[0])) + '/config.txt'
+        
 class ExampleApp(QtGui.QMainWindow, design.Ui_MainWindow):
     def __init__(self):
-        # Explaining super is out of the scope of this article
-        # So please google it if you're not familar with it
-        # Simple reason why we use it here is that it allows us to
-        # access variables, methods etc in the design.py file
+        global ffmpeg
         super(self.__class__, self).__init__()
         self.setupUi(self)  # This is defined in design.py file automatically
-        # It sets up layout and widgets that are defined
-        #global directory
-
+        if os.path.isfile(config):
+            print os.path.isfile(config)
+            with open(config,"r") as fo:
+                ffmpeg = fo.read()
+            
+            print 'i used %s as exe' % ffmpeg
+        try:
+            print ffmpeg, 'fsuioduiouwriou'
+            subprocess.call([ffmpeg, '-v','0'])
+        except OSError:
+            print 'ffmpeg is not installed - please set ffmpeg path in settings!'
+            msgBox = QtGui.QMessageBox()
+            msgBox.setText('FFmpeg is not installed - Please select the ffmpeg executable')
+            ret = msgBox.exec_() 
+            
+            ffmpeg = QtGui.QFileDialog.getOpenFileName(self, "FFMPEG EXECUTABLE") 
+            if not os.path.isfile(config):
+                 with open(config,"wb") as fo: 
+                     fo.write(ffmpeg)  
+                                                      
+        global container
+        container = '.mkv' # default - find out a better way of doing this, like 'if not x'
         directory = self.btnBrowse.clicked.connect(self.browse_folder)
         #directory = QtCore.QString(directory)
-        self.btnBrowse.clicked.connect(self.update_dir)  # When the button is pressed
-        
-        self.pushButton.clicked.connect(self.encode)                                                    # Execute browse_folder function
+        self.btnBrowse.clicked.connect(self.update_dir)
+        self.pushButton.clicked.connect(self.encode)                                                    
+        self.pushButton_3.clicked.connect(self.override_output) 
+        self.pushButton_3.clicked.connect(self.update_output)
+        self.container_selection.activated[str].connect(self.on_combo_activated)
         
     def browse_folder(self):
-        #self.textBrowser.clear() # In case there are any existing elements in the list
         global directory
-        directory = QtGui.QFileDialog.getOpenFileName(self,
-                                                           "Pick a folder")
-        # execute getExistingDirectory dialog and set the directory variable to be equal
-        # to the user selected directory
-        
+        directory = QtGui.QFileDialog.getOpenFileName(self, "Pick a file")
         return directory
+    
+    def override_output(self):
+        #self.textBrowser.clear() # In case there are any existing elements in the list
+        global output
+        output = QtGui.QFileDialog.getExistingDirectory(self, "Pick a file")
+        
+    def on_combo_activated(self):
+        global container
+        container = self.container_selection.currentText()
+        print container
+        
     def encode(self):
         try:
               if directory: 
-                    subprocess.call(['ffmpeg','-i', directory, '-c:v', 'ffv1', '-f', 'null','-']) # for all files, if any, in the directory    
-
+                    subprocess.call([str(ffmpeg),'-i', str(directory), '-c:v', 'ffv1', '-f', 'null','-']) 
         except NameError:
                 msgBox = QtGui.QMessageBox()
                 msgBox.setText('Please select an input before encoding')
                 ret = msgBox.exec_()    
     def update_dir(self):
-
-        self.filename_text.setText(directory)# add file to the listWidget
+        self.filename_text.setText(directory)
+        
+    def update_output(self):
+        self.lineEdit_2.setText(output)
+        
 def main():
     app = QtGui.QApplication(sys.argv)  # A new instance of QApplication
     form = ExampleApp()  # We set the form to be our ExampleApp (design)
