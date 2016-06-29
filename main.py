@@ -12,10 +12,12 @@ class ExampleApp(QtGui.QMainWindow, design.Ui_MainWindow):
         try:
             subprocess.call(['ffmpeg', '-v','0'])
         except OSError:
-            print 'ffmpeg is not installed!'
+            print 'ffmpeg is not installed - please set ffmpeg path in settings!'
             msgBox = QtGui.QMessageBox()
-            msgBox.setText('FFmpeg is not installed!')
-            ret = msgBox.exec_()   
+            msgBox.setText('FFmpeg is not installed - Please select the ffmpeg executable')
+            ret = msgBox.exec_() 
+            QtGui.QFileDialog.getOpenFileName(self,
+                                                                      "FFMPEG EXECUTABLE")  
         global container
         container = '.mkv' # default - find out a better way of doing this, like 'if not x'
         
