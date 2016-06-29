@@ -9,6 +9,13 @@ class ExampleApp(QtGui.QMainWindow, design.Ui_MainWindow):
     def __init__(self):
         super(self.__class__, self).__init__()
         self.setupUi(self)  # This is defined in design.py file automatically
+        try:
+            subprocess.call(['ffmpeg', '-v','0'])
+        except OSError:
+            print 'ffmpeg is not installed!'
+            msgBox = QtGui.QMessageBox()
+            msgBox.setText('FFmpeg is not installed!')
+            ret = msgBox.exec_()   
         global container
         container = '.mkv' # default - find out a better way of doing this, like 'if not x'
         
@@ -34,7 +41,10 @@ class ExampleApp(QtGui.QMainWindow, design.Ui_MainWindow):
         container = self.container_selection.currentText()
         print container    
     def encode(self):
-        
+       
+            
+            
+            
         print container, 5343
         try:
               if directory: 
