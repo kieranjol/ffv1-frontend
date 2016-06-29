@@ -4,20 +4,35 @@ import subprocess
 import design
 import os
 
+ffmpeg = 'ffmpeg'
+config =  os.path.dirname(os.path.abspath(sys.argv[0])) + '/config.txt'
 
+         
 class ExampleApp(QtGui.QMainWindow, design.Ui_MainWindow):
     def __init__(self):
         super(self.__class__, self).__init__()
         self.setupUi(self)  # This is defined in design.py file automatically
+        if os.path.isfile(config):
+            print os.path.isfile(config)
+            with open(config,"r") as fo:
+                ffmpeg = fo.read()
+            
+            print 'i used %s as thingy' % ffmpeg
         try:
-            subprocess.call(['ffmpeg', '-v','0'])
+            print ffmpeg, 'fsuioduiouwriou'
+            subprocess.call([ffmpeg, '-v','0'])
         except OSError:
             print 'ffmpeg is not installed - please set ffmpeg path in settings!'
             msgBox = QtGui.QMessageBox()
             msgBox.setText('FFmpeg is not installed - Please select the ffmpeg executable')
             ret = msgBox.exec_() 
-            QtGui.QFileDialog.getOpenFileName(self,
-                                                                      "FFMPEG EXECUTABLE")  
+            global ffmpeg
+            ffmpeg = QtGui.QFileDialog.getOpenFileName(self,
+                                                                      "FFMPEG EXECUTABLE") 
+            if not os.path.isfile(config):
+                 with open(config,"wb") as fo: 
+                     fo.write(ffmpeg)  
+                                                      
         global container
         container = '.mkv' # default - find out a better way of doing this, like 'if not x'
         
@@ -43,14 +58,11 @@ class ExampleApp(QtGui.QMainWindow, design.Ui_MainWindow):
         container = self.container_selection.currentText()
         print container    
     def encode(self):
-       
-            
-            
-            
+    
         print container, 5343
         try:
               if directory: 
-                    subprocess.call(['ffmpeg','-i', str(directory), '-c:v', 'ffv1', '-f', 'null','-']) # for all files, if any, in the directory    
+                    subprocess.call([str(ffmpeg),'-i', str(directory), '-c:v', 'ffv1', '-f', 'null','-']) # for all files, if any, in the directory    
 
         except NameError:
                 msgBox = QtGui.QMessageBox()
