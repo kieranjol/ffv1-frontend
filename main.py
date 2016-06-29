@@ -9,11 +9,15 @@ class ExampleApp(QtGui.QMainWindow, design.Ui_MainWindow):
     def __init__(self):
         super(self.__class__, self).__init__()
         self.setupUi(self)  # This is defined in design.py file automatically
+        global container
+        container = '.mkv' # default - find out a better way of doing this, like 'if not x'
+        
+        print container, '111111111111111111111'
         directory = self.btnBrowse.clicked.connect(self.browse_folder)
         #directory = QtCore.QString(directory)
         self.btnBrowse.clicked.connect(self.update_dir)
         self.pushButton.clicked.connect(self.encode)                                                    
-        container = '.mkv' # default - find out a better way of doing this, like 'if not x'
+        
         self.container_selection.activated[str].connect(self.on_combo_activated)
     def browse_folder(self):
         #self.textBrowser.clear() # In case there are any existing elements in the list
@@ -30,10 +34,11 @@ class ExampleApp(QtGui.QMainWindow, design.Ui_MainWindow):
         container = self.container_selection.currentText()
         print container    
     def encode(self):
+        
         print container, 5343
         try:
               if directory: 
-                    subprocess.call(['ffmpeg','-i', directory, '-c:v', 'ffv1', '-f', 'null','-']) # for all files, if any, in the directory    
+                    subprocess.call(['ffmpeg','-i', str(directory), '-c:v', 'ffv1', '-f', 'null','-']) # for all files, if any, in the directory    
 
         except NameError:
                 msgBox = QtGui.QMessageBox()
