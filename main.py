@@ -69,10 +69,10 @@ class ExampleApp(QtGui.QMainWindow, design.Ui_MainWindow):
         global source_framemd5
         global output_framemd5
         '''
-        output = str(directory) + '.mkv'
+        output = str(directory) + container
         # Change this so that output will default if an entry isn't in override_output
         if output == '':
-            output = str(directory) + '.mkv'
+            output = str(directory) + container
         source_framemd5 = directory + '.framemd5'
         print source_framemd5
         output_framemd5 = output + '.framemd5'
