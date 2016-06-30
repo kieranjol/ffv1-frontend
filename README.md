@@ -1,9 +1,10 @@
 # ffv1-gui
 ![GUI](https://raw.githubusercontent.com/kieranjol/ffv1-gui/master/screen.png)
 # Installation
-1. Download the windows file from here: https://github.com/kieranjol/ffv1-gui/releases/download/0.1/main.exe
-2. If ffmpeg is not already installed, download a windows ffmpeg build from here: https://ffmpeg.zeranoe.com/builds/win64/static/ffmpeg-latest-win64-static.zip
-3. Unzip/Extract ffmpeg.exe from that zip file and place it somewhere on your computer.
+
+1. If ffmpeg is not already installed, download a windows ffmpeg build from here: https://ffmpeg.zeranoe.com/builds/win64/static/ffmpeg-latest-win64-static.zip
+2. Unzip/Extract ffmpeg.exe from that zip file and place it somewhere on your computer.
+3. Download the windows ffv1-gui release from here: https://github.com/kieranjol/ffv1-gui/releases/download/0.1/main.exe
 4. If ffmpeg in not installed, a warning will pop up, followed by a prompt to select where ffmpeg.exe is located.
 5. Make sure you select ffmpeg.exe when prompted. It is located wherever you stored it in step 3
 6. Now that FFV1-GUI knows where ffmpeg is installed, select a file to transcode.
