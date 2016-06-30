@@ -8,7 +8,9 @@
 5. Make sure you select ffmpeg.exe when prompted. It is located wherever you stored it in step 3
 6. Now that FFV1-GUI knows where ffmpeg is installed, select a file to transcode.
 7. By default, FFV1-GUI creates a sidecar mkv file, but if you'd like to choose a different output directory, please select 'Select Output Directory'
-8. A terminal window will pop up when transcoding.
+8. A terminal window will pop up when transcoding, and when complete, you should find a new file next to your source file with the extension '.mkv'
+<br>
+Framemd5/md5/container selection/batch currently not working.
 
 
 Future plans: Compile to exe/app and transcode from ffv1 -> prores/h264<br>
