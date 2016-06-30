@@ -15,7 +15,9 @@ class ExampleApp(QtGui.QMainWindow, design.Ui_MainWindow):
         if os.path.isfile(config):
             print os.path.isfile(config)
             with open(config,"r") as fo:
-                ffmpeg = fo.read()
+                ffmpeg = fo.readline()
+                print ffmpeg
+                
             
             print 'i used %s as exe' % ffmpeg
         try:
@@ -29,9 +31,9 @@ class ExampleApp(QtGui.QMainWindow, design.Ui_MainWindow):
             
             ffmpeg = QtGui.QFileDialog.getOpenFileName(self, "FFMPEG EXECUTABLE") 
             if not os.path.isfile(config):
-                 with open(config,"wb") as fo: 
-                     fo.write(ffmpeg)  
-                                                      
+                 with open(config,"w") as fo: 
+                     fo.write(ffmpeg)
+
         global container
         container = '.mkv' # default - find out a better way of doing this, like 'if not x'
         directory = self.btnBrowse.clicked.connect(self.browse_folder)
