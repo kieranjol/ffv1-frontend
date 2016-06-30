@@ -3,6 +3,7 @@ import sys
 import subprocess
 import design
 import os
+import filecmp
 
 ffmpeg = 'ffmpeg'
 config =  os.path.dirname(os.path.abspath(sys.argv[0])) + '/config.txt'
@@ -48,11 +49,12 @@ class ExampleApp(QtGui.QMainWindow, design.Ui_MainWindow):
         global directory
         
         directory = QtGui.QFileDialog.getOpenFileName(self, "Pick a file")
+        
         return directory
     
     def override_output(self):
         #self.textBrowser.clear() # In case there are any existing elements in the list
-        global output
+        #global output
         output = QtGui.QFileDialog.getExistingDirectory(self, "Pick a file")
         output  += '/' + str(os.path.basename(str(directory))) + '.mkv'
         
@@ -62,11 +64,21 @@ class ExampleApp(QtGui.QMainWindow, design.Ui_MainWindow):
         print container
         
     def encode(self):
+        '''
         global output
+        global source_framemd5
+        global output_framemd5
+        '''
+        output = str(directory) + '.mkv'
+        # Change this so that output will default if an entry isn't in override_output
         if output == '':
             output = str(directory) + '.mkv'
-        
+        source_framemd5 = directory + '.framemd5'
+        print source_framemd5
+        output_framemd5 = output + '.framemd5'
         cmd = [str(ffmpeg),'-i', str(directory), '-c:v', 'ffv1', '-level', '3',str(output)]
+        if not self.checkBox.isChecked():
+            cmd += ['-f','framemd5','-an',str(source_framemd5)]
         print cmd
         try:
               if directory: 
@@ -74,12 +86,24 @@ class ExampleApp(QtGui.QMainWindow, design.Ui_MainWindow):
         except NameError:
                 msgBox = QtGui.QMessageBox()
                 msgBox.setText('Please select an input before encoding')
-                ret = msgBox.exec_()    
+                ret = msgBox.exec_() 
+
+        if not self.checkBox.isChecked():
+            fmd5 = [str(ffmpeg),'-i', str(output),  '-f','framemd5','-an',str(output_framemd5)]
+            subprocess.call(fmd5)  
+            if filecmp.cmp(source_framemd5, output_framemd5, shallow=False): 
+                print "YOUR FILES ARE LOSSLESS YOU SHOULD BE SO HAPPY!!!"
+            else:
+                msgBox = QtGui.QMessageBox()
+                msgBox.setText('Your transcode was not lossless')
+                ret = msgBox.exec_()          
     def update_dir(self):
         self.filename_text.setText(directory)
         
     def update_output(self):
         self.lineEdit_2.setText(output)
+    
+        
         
 def main():
     app = QtGui.QApplication(sys.argv)  # A new instance of QApplication
