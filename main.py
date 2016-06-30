@@ -6,7 +6,7 @@ import os
 
 ffmpeg = 'ffmpeg'
 config =  os.path.dirname(os.path.abspath(sys.argv[0])) + '/config.txt'
-        
+output = ''        
 class ExampleApp(QtGui.QMainWindow, design.Ui_MainWindow):
     def __init__(self):
         global ffmpeg
@@ -46,6 +46,7 @@ class ExampleApp(QtGui.QMainWindow, design.Ui_MainWindow):
         
     def browse_folder(self):
         global directory
+        
         directory = QtGui.QFileDialog.getOpenFileName(self, "Pick a file")
         return directory
     
@@ -53,6 +54,7 @@ class ExampleApp(QtGui.QMainWindow, design.Ui_MainWindow):
         #self.textBrowser.clear() # In case there are any existing elements in the list
         global output
         output = QtGui.QFileDialog.getExistingDirectory(self, "Pick a file")
+        output  += '/' + str(os.path.basename(str(directory))) + '.mkv'
         
     def on_combo_activated(self):
         global container
@@ -60,9 +62,15 @@ class ExampleApp(QtGui.QMainWindow, design.Ui_MainWindow):
         print container
         
     def encode(self):
+        global output
+        if output == '':
+            output = str(directory) + '.mkv'
+        
+        cmd = [str(ffmpeg),'-i', str(directory), '-c:v', 'ffv1', '-level', '3',str(output)]
+        print cmd
         try:
               if directory: 
-                    subprocess.call([str(ffmpeg),'-i', str(directory), '-c:v', 'ffv1', '-f', 'null','-']) 
+                    subprocess.call(cmd) 
         except NameError:
                 msgBox = QtGui.QMessageBox()
                 msgBox.setText('Please select an input before encoding')
