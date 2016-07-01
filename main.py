@@ -8,6 +8,7 @@ import hashlib
 
 ffmpeg = 'ffmpeg'
 config =  os.path.dirname(os.path.abspath(sys.argv[0])) + '/config.txt'
+
 output = ''     
  
 class ExampleApp(QtGui.QMainWindow, design.Ui_MainWindow):
@@ -43,9 +44,7 @@ class ExampleApp(QtGui.QMainWindow, design.Ui_MainWindow):
         
     def browse_folder(self):
         global directory
-        
         directory = QtGui.QFileDialog.getOpenFileName(self, "Pick a file")
-        
         return directory
     
     def override_output(self):
@@ -59,8 +58,8 @@ class ExampleApp(QtGui.QMainWindow, design.Ui_MainWindow):
         container = self.container_selection.currentText()
         
     def encode(self):
-
-        output = str(directory) + container
+        global output
+        print output
         # Change this so that output will default if an entry isn't in override_output
         if output == '':
             output = str(directory) + container
@@ -91,12 +90,7 @@ class ExampleApp(QtGui.QMainWindow, design.Ui_MainWindow):
         if not self.checkBox.isChecked():
             fmd5 = [str(ffmpeg),'-i', str(output),  '-f','framemd5','-an',str(output_framemd5)]
             subprocess.call(fmd5)  
-            if filecmp.cmp(source_framemd5, output_framemd5, shallow=False): 
-                print "YOUR FILES ARE LOSSLESS YOU SHOULD BE SO HAPPY!!!"
-            else:
-                msgBox = QtGui.QMessageBox()
-                msgBox.setText('Your transcode was not lossless')
-                ret = msgBox.exec_()     
+            
         global output_parent_dir
         global normpath 
         global relative_path
@@ -118,6 +112,13 @@ class ExampleApp(QtGui.QMainWindow, design.Ui_MainWindow):
             md5_output = m.hexdigest()
             with open(manifest_destination,"wb") as fo:
                 fo.write(md5_output + '  ' + normpath.split(os.sep)[-1] )
+        
+        if filecmp.cmp(source_framemd5, output_framemd5, shallow=False): 
+                print "YOUR FILES ARE LOSSLESS YOU SHOULD BE SO HAPPY!!!"
+            else:
+                msgBox = QtGui.QMessageBox()
+                msgBox.setText('Your transcode was not lossless')
+                ret = msgBox.exec_()     
         print 'Encode process completed'           
     def update_dir(self):
         self.filename_text.setText(directory)
