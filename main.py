@@ -115,7 +115,7 @@ class ExampleApp(QtGui.QMainWindow, design.Ui_MainWindow):
         
         if filecmp.cmp(source_framemd5, output_framemd5, shallow=False): 
                 print "YOUR FILES ARE LOSSLESS YOU SHOULD BE SO HAPPY!!!"
-            else:
+        else:
                 msgBox = QtGui.QMessageBox()
                 msgBox.setText('Your transcode was not lossless')
                 ret = msgBox.exec_()     
