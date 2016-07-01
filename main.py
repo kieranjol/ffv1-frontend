@@ -51,7 +51,7 @@ class ExampleApp(QtGui.QMainWindow, design.Ui_MainWindow):
         #self.textBrowser.clear() # In case there are any existing elements in the list
         global output
         output = QtGui.QFileDialog.getExistingDirectory(self, "Pick a file")
-        output  += '/' + str(os.path.basename(str(directory))) + '.mkv'
+        output  += '/' + str(os.path.basename(str(directory))) 
         
     def on_combo_activated(self):
         global container
@@ -63,6 +63,8 @@ class ExampleApp(QtGui.QMainWindow, design.Ui_MainWindow):
         # Change this so that output will default if an entry isn't in override_output
         if output == '':
             output = str(directory) + container
+        else:
+            output+= container
         source_framemd5 = directory + '.framemd5'
         output_framemd5 = output + '.framemd5'
         cmd = [str(ffmpeg),
