@@ -44,7 +44,8 @@ class ExampleApp(QtGui.QMainWindow, design.Ui_MainWindow):
         
     def browse_folder(self):
         global directory
-        directory = QtGui.QFileDialog.getOpenFileName(self, "Pick a file")
+        filters = "videos (*.mov *.mxf *.avi *.mkv *.mp4 *.wmv)"
+        directory = QtGui.QFileDialog.getOpenFileName(self, "Pick a file", filters)
         return directory
     
     def override_output(self):
@@ -90,7 +91,7 @@ class ExampleApp(QtGui.QMainWindow, design.Ui_MainWindow):
                 ret = msgBox.exec_() 
 
         if not self.checkBox.isChecked():
-            fmd5 = [str(ffmpeg),'-i', str(output),  '-f','framemd5','-an',str(output_framemd5)]
+            fmd5 = [str(ffmpeg),'-i', str(output), '-f','framemd5', '-an',str(output_framemd5)]
             subprocess.call(fmd5)  
             
         global output_parent_dir
@@ -117,6 +118,9 @@ class ExampleApp(QtGui.QMainWindow, design.Ui_MainWindow):
         
         if filecmp.cmp(source_framemd5, output_framemd5, shallow=False): 
                 print "YOUR FILES ARE LOSSLESS YOU SHOULD BE SO HAPPY!!!"
+                msgBox = QtGui.QMessageBox()
+                msgBox.setText('Your transcode was lossless')
+                ret = msgBox.exec_()    
         else:
                 msgBox = QtGui.QMessageBox()
                 msgBox.setText('Your transcode was not lossless')
