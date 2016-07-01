@@ -4,23 +4,12 @@ import subprocess
 import design
 import os
 import filecmp
+import hashlib
 
 ffmpeg = 'ffmpeg'
 config =  os.path.dirname(os.path.abspath(sys.argv[0])) + '/config.txt'
 output = ''     
-def make_manifest(manifest_dir, relative_manifest_path, manifest_textfile):
-        os.chdir(manifest_dir)
-        if os.path.isfile(manifest_destination):
-            print 'Destination manifest already exists'
-        manifest_generator = subprocess.check_output(['md5deep', '-ler', relative_manifest_path])
-        manifest_list = manifest_generator.splitlines()
-        files_in_manifest = len(manifest_list)
-        # http://stackoverflow.com/a/31306961/2188572
-        manifest_list = sorted(manifest_list,  key=lambda x:(x[34:])) 
-        with open(manifest_textfile,"wb") as fo:
-            for i in manifest_list:
-                fo.write(i + '\n')
-        return files_in_manifest   
+ 
 class ExampleApp(QtGui.QMainWindow, design.Ui_MainWindow):
     def __init__(self):
         global ffmpeg
@@ -29,7 +18,6 @@ class ExampleApp(QtGui.QMainWindow, design.Ui_MainWindow):
         if os.path.isfile(config):
             with open(config,"r") as fo:
                 ffmpeg = fo.readline()
-
         try:
             subprocess.call([ffmpeg, '-v','0'])
         except OSError:
@@ -62,7 +50,7 @@ class ExampleApp(QtGui.QMainWindow, design.Ui_MainWindow):
     
     def override_output(self):
         #self.textBrowser.clear() # In case there are any existing elements in the list
-        #global output
+        global output
         output = QtGui.QFileDialog.getExistingDirectory(self, "Pick a file")
         output  += '/' + str(os.path.basename(str(directory))) + '.mkv'
         
@@ -71,11 +59,7 @@ class ExampleApp(QtGui.QMainWindow, design.Ui_MainWindow):
         container = self.container_selection.currentText()
         
     def encode(self):
-        '''
-        global output
-        global source_framemd5
-        global output_framemd5
-        '''
+
         output = str(directory) + container
         # Change this so that output will default if an entry isn't in override_output
         if output == '':
@@ -124,22 +108,28 @@ class ExampleApp(QtGui.QMainWindow, design.Ui_MainWindow):
         dirname              = os.path.split(os.path.basename(str(output)))[1]
         manifest_destination           = output_parent_dir + '/%s_manifest.md5' % dirname
         if self.checkBox_2.isChecked():
-            make_manifest( output_parent_dir, relative_path, manifest_destination )
+            m = hashlib.md5()
+            with open(str(output),'rb') as f: 
+               while True:
+                    buf = f.read(2**20)
+                    if not buf:
+                        break
+                    m.update( buf )
+            md5_output = m.hexdigest()
+            with open(manifest_destination,"wb") as fo:
+                fo.write(md5_output + '  ' + normpath.split(os.sep)[-1] )
         print 'Encode process completed'           
     def update_dir(self):
         self.filename_text.setText(directory)
         
     def update_output(self):
         self.lineEdit_2.setText(output)
-    
        
-        
 def main():
     app = QtGui.QApplication(sys.argv)  # A new instance of QApplication
     form = ExampleApp()  # We set the form to be our ExampleApp (design)
     form.show()  # Show the form
     app.exec_()  # and execute the app
     
-
 if __name__ == '__main__':  # if we're running file directly and not importing it
     main()  # run the main function
