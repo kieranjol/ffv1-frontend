@@ -1,5 +1,5 @@
 # ffv1-gui
-![GUI](https://raw.githubusercontent.com/kieranjol/ffv1-gui/master/screen.png)
+![GUI](https://raw.githubusercontent.com/kieranjol/ffv1-gui/master/Screenshot%20from%202016-06-27%2017%3A53%3A33.png)
 # Installation
 
 1. If ffmpeg is not already installed, download a windows ffmpeg build from here: https://ffmpeg.zeranoe.com/builds/win64/static/ffmpeg-latest-win64-static.zip
