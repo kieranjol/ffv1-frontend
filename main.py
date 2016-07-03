@@ -34,6 +34,11 @@ class ExampleApp(QtGui.QMainWindow, design.Ui_MainWindow):
 
         global container
         container = '.mkv' # default - find out a better way of doing this, like 'if not x'
+        self.batch_button.setEnabled(False)
+        self.radioButton.setChecked(True)
+        self.radioButton_2.toggled.connect(self.enable_button)
+        self.radioButton.toggled.connect(self.enable_inputButton)
+        self.checkBox_2.setChecked(True)
         directory = self.btnBrowse.clicked.connect(self.browse_folder)
         #directory = QtCore.QString(directory)
         self.btnBrowse.clicked.connect(self.update_dir)
@@ -41,10 +46,14 @@ class ExampleApp(QtGui.QMainWindow, design.Ui_MainWindow):
         self.pushButton_3.clicked.connect(self.override_output) 
         self.pushButton_3.clicked.connect(self.update_output)
         self.container_selection.activated[str].connect(self.on_combo_activated)
-        
+    def enable_button(self):
+        self.batch_button.setEnabled(True) 
+        self.btnBrowse.setEnabled(False) 
+    def enable_inputButton(self):
+        self.batch_button.setEnabled(False) 
+        self.btnBrowse.setEnabled(True)        
     def browse_folder(self):
         global directory
-        filters = "videos (*.mov *.mxf *.avi *.mkv *.mp4 *.wmv)"
         directory = QtGui.QFileDialog.getOpenFileName(self, 'Open file', 
          '',"Video files (*.mov *.mxf *.avi *.mkv *.mp4 *.wmv *.webm *.ogg *.ogm) ;; All Files(*)")
         return directory
