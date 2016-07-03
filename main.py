@@ -140,10 +140,10 @@ class ExampleApp(QtGui.QMainWindow, design.Ui_MainWindow):
         global relative_path
         global dirname
         global manifest_destination 
-        output_parent_dir    = os.path.dirname(str(output))
-        normpath             = os.path.normpath(str(output)) 
+        output_parent_dir    = os.path.dirname(str(out))
+        normpath             = os.path.normpath(str(out)) 
         relative_path        = normpath.split(os.sep)[-1]
-        dirname              = os.path.split(os.path.basename(str(output)))[1]
+        dirname              = os.path.split(os.path.basename(str(out)))[1]
         manifest_destination           = output_parent_dir + '/%s_manifest.md5' % dirname
         if self.checkBox_2.isChecked():
             m = hashlib.md5()
