@@ -8,7 +8,7 @@ import hashlib
 
 ffmpeg = 'ffmpeg'
 config =  os.path.dirname(os.path.abspath(sys.argv[0])) + '/config.txt'
-
+override = 'n'
 output = ''     
  
 class ExampleApp(QtGui.QMainWindow, design.Ui_MainWindow):
@@ -41,11 +41,14 @@ class ExampleApp(QtGui.QMainWindow, design.Ui_MainWindow):
         self.checkBox_2.setChecked(True)
         directory = self.btnBrowse.clicked.connect(self.browse_folder)
         #directory = QtCore.QString(directory)
+        
         self.btnBrowse.clicked.connect(self.update_dir)
         self.pushButton.clicked.connect(self.encode)                                                    
-        self.pushButton_3.clicked.connect(self.override_output) 
+        output = self.pushButton_3.clicked.connect(self.override_output) 
         self.pushButton_3.clicked.connect(self.update_output)
+        
         self.container_selection.activated[str].connect(self.on_combo_activated)
+        
     def enable_button(self):
         self.batch_button.setEnabled(True) 
         self.btnBrowse.setEnabled(False) 
@@ -61,23 +64,30 @@ class ExampleApp(QtGui.QMainWindow, design.Ui_MainWindow):
     def override_output(self):
         #self.textBrowser.clear() # In case there are any existing elements in the list
         global output
+        global override
         output = QtGui.QFileDialog.getExistingDirectory(self, "Pick a file")
-        output  += '/' + str(os.path.basename(str(directory))) 
-        
+         
+        override = 'y'
+        return output
     def on_combo_activated(self):
         global container
         container = self.container_selection.currentText()
         
     def encode(self):
         global output
-        print output
+        
         # Change this so that output will default if an entry isn't in override_output
-        if output == '':
+        if override == 'n':
             output = str(directory) + container
-        else:
-            output+= container
+        
+        elif override == 'y':
+            print override
+             
+        
         source_framemd5 = directory + '.framemd5'
+        '''
         output_framemd5 = output + '.framemd5'
+        '''
         cmd = [str(ffmpeg),
                         '-i', str(directory), 
                         '-c:v', 'ffv1',
@@ -88,7 +98,17 @@ class ExampleApp(QtGui.QMainWindow, design.Ui_MainWindow):
                         '-dn',
                         '-report',
                         '-slicecrc', '1',
-                        '-slices', '16',str(output)]
+                        '-slices', '16']
+                        
+        if override == 'n':
+            out = ''
+            out += str(directory) + container
+            print out
+            cmd += [str(out)]
+        elif override == 'y':
+            out = ''
+            out += output + '/' + str(os.path.basename(str(directory))) + container
+            cmd += [str(out)]
         if not self.checkBox.isChecked():
             cmd += ['-f','framemd5','-an',str(source_framemd5)]
         print cmd
@@ -101,7 +121,18 @@ class ExampleApp(QtGui.QMainWindow, design.Ui_MainWindow):
                 ret = msgBox.exec_() 
 
         if not self.checkBox.isChecked():
-            fmd5 = [str(ffmpeg),'-i', str(output), '-f','framemd5', '-an',str(output_framemd5)]
+            
+            fmd5 = [str(ffmpeg),'-i', str(out), '-f','framemd5', '-an']
+            if override == 'n':
+                fmd5output = ''
+                fmd5output += str(output) + '.framemd5'
+                print fmd5output
+                fmd5 += [fmd5output]
+            elif override == 'y':
+                fmd5output = ''
+                fmd5output += str(output) + '/' + str(os.path.basename(str(out))) + '.framemd5'
+                fmd5 += [fmd5output]
+            print fmd5
             subprocess.call(fmd5)  
             
         global output_parent_dir
@@ -116,7 +147,7 @@ class ExampleApp(QtGui.QMainWindow, design.Ui_MainWindow):
         manifest_destination           = output_parent_dir + '/%s_manifest.md5' % dirname
         if self.checkBox_2.isChecked():
             m = hashlib.md5()
-            with open(str(output),'rb') as f: 
+            with open(str(out),'rb') as f: 
                while True:
                     buf = f.read(2**20)
                     if not buf:
@@ -126,7 +157,7 @@ class ExampleApp(QtGui.QMainWindow, design.Ui_MainWindow):
             with open(manifest_destination,"wb") as fo:
                 fo.write(md5_output + '  ' + normpath.split(os.sep)[-1] )
         
-        if filecmp.cmp(source_framemd5, output_framemd5, shallow=False): 
+        if filecmp.cmp(source_framemd5, fmd5output, shallow=False): 
                 print "YOUR FILES ARE LOSSLESS YOU SHOULD BE SO HAPPY!!!"
                 msgBox = QtGui.QMessageBox()
                 msgBox.setText('Your transcode was lossless')
