@@ -7,10 +7,11 @@ import filecmp
 import hashlib
 from glob import glob
 
+
 ffmpeg = 'ffmpeg'
 config = os.path.dirname(os.path.abspath(sys.argv[0])) + '/config.txt'
 override = 'n'
-output = '' 
+output = ''
 
 class ExampleApp(QtGui.QMainWindow, design.Ui_MainWindow):
     def __init__(self):
@@ -23,9 +24,11 @@ class ExampleApp(QtGui.QMainWindow, design.Ui_MainWindow):
         try:
             subprocess.call([ffmpeg, '-v', '0'])
         except OSError:
-            print 'ffmpeg is not installed - please set ffmpeg path in settings!'
+            print ('ffmpeg is not installed -'
+             'please set ffmpeg path in settings!')
             msgBox = QtGui.QMessageBox()
-            msgBox.setText('FFmpeg is not installed - Please select the ffmpeg executable')
+            msgBox.setText('FFmpeg is not installed - '
+            'Please select the ffmpeg executable')
             ret = msgBox.exec_()
             ffmpeg = QtGui.QFileDialog.getOpenFileName(self, "FFMPEG EXECUTABLE") 
             if not os.path.isfile(config):
@@ -169,7 +172,8 @@ class ExampleApp(QtGui.QMainWindow, design.Ui_MainWindow):
                     fo.write(md5_output + '  ' + normpath.split(os.sep)[-1])
 
             if filecmp.cmp(source_framemd5, fmd5output, shallow=False):
-                    print "YOUR FILES ARE LOSSLESS YOU SHOULD BE SO HAPPY!!!"
+                    print ('YOUR FILES ARE LOSSLESS'
+                    ' YOU SHOULD BE SO HAPPY!!!')
                     msgBox = QtGui.QMessageBox()
                     msgBox.setText('Your transcode was lossless')
                     ret = msgBox.exec_()
