@@ -58,7 +58,7 @@ class ExampleApp(QtGui.QMainWindow, design.Ui_MainWindow):
     def browse_folder(self):
         global directory
         directory = QtGui.QFileDialog.getOpenFileName(self, 'Open file', 
-         '',"Video files (*.mov *.mxf *.avi *.mkv *.mp4 *.wmv *.webm *.ogg *.ogm) ;; All Files(*)")
+         '',"Video files (*.mov *.mov *.mxf *.avi *.mkv *.mp4 *.wmv *.webm *.ogg *.ogm) ;; All Files(*)")
         return directory
     
     def override_output(self):
