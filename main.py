@@ -81,6 +81,10 @@ class ExampleApp(QtGui.QMainWindow, design.Ui_MainWindow):
         container = self.container_selection.currentText()
 
     def encode(self):
+        counter = 0
+        error = 0
+        success = 0
+        error_list = []
         global output
         if os.path.isfile(directory):
             print os.path.isfile(directory)
@@ -174,20 +178,32 @@ class ExampleApp(QtGui.QMainWindow, design.Ui_MainWindow):
             if filecmp.cmp(source_framemd5, fmd5output, shallow=False):
                     print ('YOUR FILES ARE LOSSLESS'
                     ' YOU SHOULD BE SO HAPPY!!!')
-                    msgBox = QtGui.QMessageBox()
-                    msgBox.setText('Your transcode was lossless')
-                    ret = msgBox.exec_()
+                    counter += 1
+                    success+= 1
             else:
-                    msgBox = QtGui.QMessageBox()
-                    msgBox.setText('Your transcode was not lossless')
-                    ret = msgBox.exec_()
+                    counter += 1
+                    error += 1
+                    error_list.append(video)
+
             print 'Encode process completed'
+        msgBox = QtGui.QMessageBox()
+        msgBox.setText('You processed %d files \n Success:%d \n Failures:%d' % (counter, success, error))
+        ret = msgBox.exec_()
+        error_string = '\n'
+        print error
+        if error > 0:
+            for errors in error_list:
+                error_string += errors + '\n'
+        msgBox = QtGui.QMessageBox()
+        msgBox.setText('The following files are not lossless: %s ' % error_string)
+        ret = msgBox.exec_()
 
     def update_dir(self):
         self.filename_text.setText(directory)
 
     def update_output(self):
         self.lineEdit_2.setText(output)
+
 
 def main():
 
