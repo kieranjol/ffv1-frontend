@@ -1,4 +1,13 @@
 # ffv1-gui
+# Features:
+Frontend GUI that performs the following actions: <br>
+
+1. Transcode either a single file, or all files in a folder to FFV1 level 3 with the option of MKV/MOV/AVI containers.
+2. Generate frame level checksums for the source and ffv1 transcode (framemd5).
+3. Lossless verification by comparing the frame level checksums of the source and output.
+4. Generate a whole file .md5 manifest for the FFV1 output.
+5. Generate verbose ffmpeg log files for the transcode and framemd5 generation.
+
 ![GUI](https://raw.githubusercontent.com/kieranjol/ffv1-gui/master/screen.png)
 # Installation
 
@@ -16,12 +25,15 @@
 8. A terminal window will pop up when transcoding, and when complete, you should find a new file next to your source file with the extension '.mkv'
 <br>
 
+#Details:
 
+1. GUI is generated using py-qt.
+2. Binaries created with pyinstaller
+3. The FFV1 files have the following features: Intra Frame, Version 3, embedded framecrc checksums.
 
 Future plans: Compile to exe/app and transcode from ffv1 -> prores/h264<br>
-
-
 
 Code initially adapted from this great article (comments remain for now) https://nikolak.com/pyqt-qt-designer-getting-started/ <br>
 
 many thanks to @euanc for help/inspiration: https://github.com/euanc/DiskFormatID
+b
