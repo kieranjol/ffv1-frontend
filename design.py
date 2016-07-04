@@ -157,7 +157,7 @@ class Ui_MainWindow(object):
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
     def retranslateUi(self, MainWindow):
-        MainWindow.setWindowTitle(_translate("MainWindow", "FFV1 Transcoder v0.1 - 2016", None))
+        MainWindow.setWindowTitle(_translate("MainWindow", "FFV1 Frontend v0.4 - 2016", None))
         self.batch_button.setToolTip(_translate("MainWindow", "<html><head/><body><p>DISABLED - All files are processed.</p></body></html>", None))
         self.batch_button.setText(_translate("MainWindow", "Select folder for MULTIPLE file transcodes", None))
         self.label_2.setText(_translate("MainWindow", "Step 1 : Choose input - Either a single file or an entire folder", None))

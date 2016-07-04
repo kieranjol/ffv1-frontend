@@ -5,6 +5,7 @@ import design
 import os
 import filecmp
 import hashlib
+from glob import glob
 
 ffmpeg = 'ffmpeg'
 config =  os.path.dirname(os.path.abspath(sys.argv[0])) + '/config.txt'
@@ -41,7 +42,7 @@ class ExampleApp(QtGui.QMainWindow, design.Ui_MainWindow):
         self.checkBox_2.setChecked(True)
         directory = self.btnBrowse.clicked.connect(self.browse_folder)
         #directory = QtCore.QString(directory)
-        
+        directory = self.batch_button.clicked.connect(self.browse_batch)
         self.btnBrowse.clicked.connect(self.update_dir)
         self.pushButton.clicked.connect(self.encode)                                                    
         output = self.pushButton_3.clicked.connect(self.override_output) 
@@ -60,7 +61,10 @@ class ExampleApp(QtGui.QMainWindow, design.Ui_MainWindow):
         directory = QtGui.QFileDialog.getOpenFileName(self, 'Open file', 
          '',"Video files (*.mov *.mov *.mxf *.avi *.mkv *.mp4 *.wmv *.webm *.ogg *.ogm) ;; All Files(*)")
         return directory
-    
+    def browse_batch(self):
+        global directory
+        directory = QtGui.QFileDialog.getExistingDirectory(self, 'Open Directory')
+        return directory
     def override_output(self):
         #self.textBrowser.clear() # In case there are any existing elements in the list
         global output
@@ -74,99 +78,118 @@ class ExampleApp(QtGui.QMainWindow, design.Ui_MainWindow):
         container = self.container_selection.currentText()
         
     def encode(self):
+    
+        
         global output
-        
-        # Change this so that output will default if an entry isn't in override_output
-        if override == 'n':
-            output = str(directory) + container
-        
-        elif override == 'y':
-            print override
-             
-        
-        source_framemd5 = directory + '.framemd5'
-        '''
-        output_framemd5 = output + '.framemd5'
-        '''
-        cmd = [str(ffmpeg),
-                        '-i', str(directory), 
-                        '-c:v', 'ffv1',
-                        '-g','1',              # Use intra-frame only aka ALL-I aka GOP=1
-                        '-level','3',          # Use Version 3 of FFv1
-                        '-c:a','copy',         # Copy and paste audio bitsream with no transcoding
-                        '-map','0',
-                        '-dn',
-                        '-report',
-                        '-slicecrc', '1',
-                        '-slices', '16']
-                        
-        if override == 'n':
-            out = ''
-            out += str(directory) + container
-            print out
-            cmd += [str(out)]
-        elif override == 'y':
-            out = ''
-            out += output + '/' + str(os.path.basename(str(directory))) + container
-            cmd += [str(out)]
-        if not self.checkBox.isChecked():
-            cmd += ['-f','framemd5','-an',str(source_framemd5)]
-        print cmd
-        try:
-              if directory: 
-                    subprocess.call(cmd) 
-        except NameError:
-                msgBox = QtGui.QMessageBox()
-                msgBox.setText('Please select an input before encoding')
-                ret = msgBox.exec_() 
+        if os.path.isfile(directory):      
+            print os.path.isfile(directory)
+            print "single file found"
+            video_files = []                       # Create empty list 
+            video_files.append(directory)  # Add filename to list
+            print video_files
 
-        if not self.checkBox.isChecked():
-            
-            fmd5 = [str(ffmpeg),'-i', str(out), '-f','framemd5', '-an']
+        # Check if input is a directory. 
+        elif os.path.isdir(directory):  
+            os.chdir(directory)
+            video_files =  glob('*.mov') + glob('*.mp4') + glob('*.mxf') + glob('*.mkv') + glob('*.avi')
+            print video_files
+        for video in video_files:   
+            # Change this so that output will default if an entry isn't in override_output
             if override == 'n':
-                fmd5output = ''
-                fmd5output += str(output) + '.framemd5'
-                print fmd5output
-                fmd5 += [fmd5output]
-            elif override == 'y':
-                fmd5output = ''
-                fmd5output += str(output) + '/' + str(os.path.basename(str(out))) + '.framemd5'
-                fmd5 += [fmd5output]
-            print fmd5
-            subprocess.call(fmd5)  
+                output = str(video) + container
             
-        global output_parent_dir
-        global normpath 
-        global relative_path
-        global dirname
-        global manifest_destination 
-        output_parent_dir    = os.path.dirname(str(out))
-        normpath             = os.path.normpath(str(out)) 
-        relative_path        = normpath.split(os.sep)[-1]
-        dirname              = os.path.split(os.path.basename(str(out)))[1]
-        manifest_destination           = output_parent_dir + '/%s_manifest.md5' % dirname
-        if self.checkBox_2.isChecked():
-            m = hashlib.md5()
-            with open(str(out),'rb') as f: 
-               while True:
-                    buf = f.read(2**20)
-                    if not buf:
-                        break
-                    m.update( buf )
-            md5_output = m.hexdigest()
-            with open(manifest_destination,"wb") as fo:
-                fo.write(md5_output + '  ' + normpath.split(os.sep)[-1] )
-        
-        if filecmp.cmp(source_framemd5, fmd5output, shallow=False): 
-                print "YOUR FILES ARE LOSSLESS YOU SHOULD BE SO HAPPY!!!"
-                msgBox = QtGui.QMessageBox()
-                msgBox.setText('Your transcode was lossless')
-                ret = msgBox.exec_()    
-        else:
-                msgBox = QtGui.QMessageBox()
-                msgBox.setText('Your transcode was not lossless')
-                ret = msgBox.exec_()     
-        print 'Encode process completed'           
+            elif override == 'y':
+                print override
+                 
+            
+            source_framemd5 = video + '.framemd5'
+            '''
+            output_framemd5 = output + '.framemd5'
+            '''
+            cmd = [str(ffmpeg),
+                            '-i', str(video), 
+                            '-c:v', 'ffv1',
+                            '-g','1',              # Use intra-frame only aka ALL-I aka GOP=1
+                            '-level','3',          # Use Version 3 of FFv1
+                            '-c:a','copy',         # Copy and paste audio bitsream with no transcoding
+                            '-map','0',
+                            '-dn',
+                            '-report',
+                            '-slicecrc', '1',
+                            '-slices', '16']
+                            
+            if override == 'n':
+                out = ''
+                out += str(video) + container
+                print out
+                cmd += [str(out)]
+            elif override == 'y':
+                out = ''
+                out += output + '/' + str(os.path.basename(str(directory))) + container
+                cmd += [str(out)]
+            if not self.checkBox.isChecked():
+                cmd += ['-f','framemd5','-an',str(source_framemd5)]
+            print cmd
+            try:
+                  if directory: 
+                        subprocess.call(cmd) 
+            except NameError:
+                    msgBox = QtGui.QMessageBox()
+                    msgBox.setText('Please select an input before encoding')
+                    ret = msgBox.exec_() 
+
+            if not self.checkBox.isChecked():
+                
+                fmd5 = [str(ffmpeg),'-i', str(out), '-f','framemd5', '-an']
+                if override == 'n':
+                    fmd5output = ''
+                    fmd5output += str(output) + '.framemd5'
+                    print fmd5output
+                    fmd5 += [fmd5output]
+                elif override == 'y':
+                    fmd5output = ''
+                    fmd5output += str(output) + '/' + str(os.path.basename(str(out))) + '.framemd5'
+                    fmd5 += [fmd5output]
+                print fmd5
+                subprocess.call(fmd5)  
+                
+            global output_parent_dir
+            global normpath 
+            global relative_path
+            global dirname
+            global manifest_destination 
+            output_parent_dir    = os.path.dirname(str(out))
+            
+            normpath             = os.path.normpath(str(out)) 
+            relative_path        = normpath.split(os.sep)[-1]
+            dirname              = os.path.split(os.path.basename(str(out)))[1]
+            manifest_destination           = '%s_manifest.md5' % dirname
+            print manifest_destination
+            print dirname
+            print normpath
+            print relative_path
+            if self.checkBox_2.isChecked():
+                m = hashlib.md5()
+                with open(str(out),'rb') as f: 
+                   while True:
+                        buf = f.read(2**20)
+                        if not buf:
+                            break
+                        m.update( buf )
+                md5_output = m.hexdigest()
+                with open(manifest_destination,"wb") as fo:
+                    fo.write(md5_output + '  ' + normpath.split(os.sep)[-1] )
+            
+            if filecmp.cmp(source_framemd5, fmd5output, shallow=False): 
+                    print "YOUR FILES ARE LOSSLESS YOU SHOULD BE SO HAPPY!!!"
+                    msgBox = QtGui.QMessageBox()
+                    msgBox.setText('Your transcode was lossless')
+                    ret = msgBox.exec_()    
+            else:
+                    msgBox = QtGui.QMessageBox()
+                    msgBox.setText('Your transcode was not lossless')
+                    ret = msgBox.exec_()     
+            print 'Encode process completed'           
     def update_dir(self):
         self.filename_text.setText(directory)
         

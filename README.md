@@ -16,7 +16,6 @@
 8. A terminal window will pop up when transcoding, and when complete, you should find a new file next to your source file with the extension '.mkv'
 <br>
 
-batch currently not working.
 
 
 Future plans: Compile to exe/app and transcode from ffv1 -> prores/h264<br>
