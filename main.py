@@ -98,13 +98,20 @@ class ExampleApp(QtGui.QMainWindow, design.Ui_MainWindow):
             video_files =  glob('*.mov') + glob('*.mp4') + glob('*.mxf') + glob('*.mkv') + glob('*.avi')
             print video_files
         for video in video_files:
-            # Change this so that output will default if an entry isn't in override_output
             if override == 'n':
                 output = str(video) + container
+            # Change this so that output will default if an entry isn't in override_output
+            filenoext = os.path.splitext(os.path.abspath(video))[0]
+            metadata_dir   = "%s/metadata" % filenoext
+            log_dir = "%s/logs" % filenoext
+            data_dir   = "%s/data" % filenoext
+            provenance_dir   = "%s/provenance" % filenoext
 
-            elif override == 'y':
-                print override
-
+            # Actually create the directories.
+            os.makedirs(metadata_dir)
+            os.makedirs(data_dir)
+            os.makedirs(provenance_dir)
+            os.makedirs(log_dir)
             source_framemd5 = video + '.framemd5'
             cmd = [str(ffmpeg),
                             '-i', str(video),
@@ -120,15 +127,18 @@ class ExampleApp(QtGui.QMainWindow, design.Ui_MainWindow):
 
             if override == 'n':
                 out = ''
-                out += str(video) + container
+                out += data_dir + '/' + str(video) + container
                 cmd += [str(out)]
             elif override == 'y':
                 out = ''
-                out += output + '/' + str(os.path.basename(str(directory))) + container
+                out += output + '/' + data_dir + '/' + str(os.path.basename(str(directory))) + container
                 cmd += [str(out)]
             if not self.checkBox.isChecked():
                 cmd += ['-f', 'framemd5', '-an', str(source_framemd5)]
             print cmd
+
+
+
             try:
                 if directory:
                     subprocess.call(cmd)
@@ -142,12 +152,13 @@ class ExampleApp(QtGui.QMainWindow, design.Ui_MainWindow):
                 fmd5 = [str(ffmpeg), '-i', str(out), '-f', 'framemd5', '-an']
                 if override == 'n':
                     fmd5output = ''
-                    fmd5output += str(output) + '.framemd5'
+                    print str(out)
+                    fmd5output += str(out) + '.framemd5'
                     print fmd5output
                     fmd5 += [fmd5output]
                 elif override == 'y':
                     fmd5output = ''
-                    fmd5output += str(output) + '/' + str(os.path.basename(str(out))) + '.framemd5'
+                    fmd5output += str(out) + '/' + str(os.path.basename(str(out))) + '.framemd5'
                     fmd5 += [fmd5output]
                 print fmd5
                 subprocess.call(fmd5)
