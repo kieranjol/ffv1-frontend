@@ -17,7 +17,7 @@ Frontend GUI that performs the following actions: <br>
 2. WINDOWS: Unzip/Extract ffmpeg.exe (it may just be called 'ffmpeg' depending on your windows settings) from that zip file and place it somewhere on your computer. ffmpeg will be in the /bin subfolder. <br>
   MAC: Unzip/extract ffmpeg from the zip file.
 3. Download the latest ffv1-gui release from here:
-   <br>WINDOWS: https://github.com/kieranjol/ffv1-gui/releases/download/v0.3.1-beta/ffv1gui_windows_binary_v0.3.1_beta.exe <br> MAC: https://github.com/kieranjol/ffv1-gui/releases/download/v0.3.1-beta/ffv1gui_macosx_binary_v0.3.1_beta
+   <br>WINDOWS: https://github.com/kieranjol/ffv1-frontend/releases/download/0.4/ffv1_frontend_windows_binary_0.4.exe <br> MAC: https://github.com/kieranjol/ffv1-frontend/releases/download/0.4/ffv1_frontend_osx_binary_0.4
 4. If ffmpeg in not installed, a warning will pop up, followed by a prompt to select where ffmpeg is located.
 5. Make sure you select the ffmpeg executable when prompted. It is located wherever you stored it in step 3
 6. Now that FFV1-GUI knows where ffmpeg is installed, select a file to transcode.
