@@ -1,4 +1,4 @@
-# ffv1-gui
+# FFV1-Frontend - NOT 100% TESTED - FOR TESTING ONLY
 # Features:
 Frontend GUI that performs the following actions: <br>
 
